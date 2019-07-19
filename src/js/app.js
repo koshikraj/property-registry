@@ -1,3 +1,4 @@
+
 App = {
   web3Provider: null,
   contracts: {},
@@ -367,7 +368,9 @@ App = {
 	}
 ];
 
-App.contracts.asset =  web3.eth.contract(abi).at('0x74866EFf1bA9396D3B4E382799C8cB7222a49F83');
+App.contracts.asset =  web3.eth.contract(abi).at('0x9b7d68289807a9c0cac14868d3ca1eb27ab7b0bd');
+console.log(App.contracts.asset);
+
 
     return App.bindEvents();
 
@@ -535,8 +538,13 @@ bindEvents: function() {
                                           else if(state == 2)
                                           {$('#resultPropStatus').text('Approved');
 
-                                          $('#resultPropFunc1 #btn-PropApprove').attr('disabled', true);
-                                          $('#resultPropFunc2 #btn-PropReject').attr('disabled', true);
+                                          // $('#resultPropFunc1 #btn-PropApprove').attr('disabled', true);
+                                          // $('#resultPropFunc2 #btn-PropReject').attr('disabled', true);
+										  $('#resultPropFunc1').html('<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">\n' +
+                                              '  Modify\n' +
+                                              '</button>');
+
+
                                           $('.sec1').html('');
                                           $('.sec2').html('');
                                           $('.sec3').html('');
@@ -582,7 +590,9 @@ bindEvents: function() {
   adduser: function(event) {
     event.preventDefault();
     var useraddress = $('#adduser #PropAddUser').val();
+    console.log(useraddress);
     web3.eth.getAccounts(function(error, accounts) {
+        console.log(accounts[0]);
                         if (error) {
                     console.log(error);
                         }
