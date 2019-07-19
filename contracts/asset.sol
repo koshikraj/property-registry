@@ -1,12 +1,12 @@
-pragma solidity ^0.4.4;
+pragma solidity ^0.5.0;
 
 contract asset {
 
     address public creatorAdmin;
-	enum Status { NotExist, Pending, Approved, Rejected }
+	enum PropStatus { NotExist, Pending, Approved, Rejected }
 
 	struct PropertyDetail {
-		Status status;
+		PropStatus status;
 		uint value;
 		address currOwner;
 	}
@@ -39,34 +39,34 @@ contract asset {
 	}
 
 	// Initializing the User Contract.
-	function asset() {
+	constructor() public {
 		creatorAdmin = msg.sender;
 		users[creatorAdmin] = 3;
 		verifiedUsers[creatorAdmin] = true;
 	}
 
 	// Create a new Property.
-	function createProperty(uint _propId, uint _value, address _owner) verifiedAdmin verifiedUser(_owner) returns (bool) {
-		properties[_propId] = PropertyDetail(Status.Pending, _value, _owner);
+	function createProperty(uint _propId, uint _value, address _owner) public verifiedAdmin verifiedUser(_owner) returns (bool) {
+		properties[_propId] = PropertyDetail(PropStatus.Pending, _value, _owner);
 		return true;
 	}
 
 	// Approve the new Property.
-	function approveProperty(uint _propId) verifiedSuperAdmin returns (bool){
+	function approveProperty(uint _propId) public verifiedSuperAdmin returns (bool){
 		require(properties[_propId].currOwner != msg.sender);
-		properties[_propId].status = Status.Approved;
+		properties[_propId].status = PropStatus.Approved;
 		return true;
 	}
 
 	// Reject the new Property.
-	function rejectProperty(uint _propId) verifiedSuperAdmin returns (bool){
+	function rejectProperty(uint _propId) public verifiedSuperAdmin returns (bool){
 		require(properties[_propId].currOwner != msg.sender);
-		properties[_propId].status = Status.Rejected;
+		properties[_propId].status = PropStatus.Rejected;
 		return true;
 	}
 
 	// Request Change of Ownership.
-	function changeOwnership(uint _propId, address _newOwner) onlyOwner(_propId) verifiedUser(_newOwner) returns (bool) {
+	function changeOwnership(uint _propId, address _newOwner) public onlyOwner(_propId) verifiedUser(_newOwner) returns (bool) {
 		require(properties[_propId].currOwner != _newOwner);
 		require(propOwnerChange[_propId] == address(0));
 		propOwnerChange[_propId] = _newOwner;
@@ -74,7 +74,7 @@ contract asset {
 	}
 
 	// Approve chage in Onwership.
-	function approveChangeOwnership(uint _propId) verifiedSuperAdmin returns (bool) {
+	function approveChangeOwnership(uint _propId) public verifiedSuperAdmin returns (bool) {
 	    require(propOwnerChange[_propId] != address(0));
 	    properties[_propId].currOwner = propOwnerChange[_propId];
 	    propOwnerChange[_propId] = address(0);
@@ -82,19 +82,19 @@ contract asset {
 	}
 
 	// Change the price of the property.
-    function changeValue(uint _propId, uint _newValue) onlyOwner(_propId) returns (bool) {
+    function changeValue(uint _propId, uint _newValue) onlyOwner(_propId) public returns (bool) {
         require(propOwnerChange[_propId] == address(0));
         properties[_propId].value = _newValue;
         return true;
     }
 
 	// Get the property details.
-	function getPropertyDetails(uint _propId) constant returns (Status, uint, address) {
+	function getPropertyDetails(uint _propId) public view returns (PropStatus, uint, address) {
 		return (properties[_propId].status, properties[_propId].value, properties[_propId].currOwner);
 	}
 
 	// Add new user.
-	function addNewUser(address _newUser) verifiedAdmin returns (bool) {
+	function addNewUser(address _newUser) public verifiedAdmin returns (bool) {
 	    require(users[_newUser] == 0);
 	    require(verifiedUsers[_newUser] == false);
 	    users[_newUser] = 1;
@@ -102,7 +102,7 @@ contract asset {
 	}
 
 	// Add new Admin.
-	function addNewAdmin(address _newAdmin) verifiedSuperAdmin returns (bool) {
+	function addNewAdmin(address _newAdmin) public verifiedSuperAdmin returns (bool) {
 	    require(users[_newAdmin] == 0);
 	    require(verifiedUsers[_newAdmin] == false);
 	    users[_newAdmin] = 2;
@@ -110,7 +110,7 @@ contract asset {
 	}
 
 	// Add new SuperAdmin.
-	function addNewSuperAdmin(address _newSuperAdmin) verifiedSuperAdmin returns (bool) {
+	function addNewSuperAdmin(address _newSuperAdmin) public verifiedSuperAdmin returns (bool) {
 	    require(users[_newSuperAdmin] == 0);
 	    require(verifiedUsers[_newSuperAdmin] == false);
 	    users[_newSuperAdmin] = 3;
@@ -118,7 +118,7 @@ contract asset {
 	}
 
 	// Approve User.
-	function approveUsers(address _newUser) verifiedSuperAdmin returns (bool) {
+	function approveUsers(address _newUser) public verifiedSuperAdmin returns (bool) {
 	    require(users[_newUser] != 0);
 	    verifiedUsers[_newUser] = true;
 	    return true;
