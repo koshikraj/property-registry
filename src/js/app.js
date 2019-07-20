@@ -459,6 +459,7 @@ bindEvents: function() {
     event.preventDefault();
     var PropId = $('#PropSearchform #PropSearch').val();
     var NewOwner = $('#PropReqChangeform #PropReqChange').val();
+      $('#exampleModal').modal('hide');
     web3.eth.getAccounts(function(error, accounts) {
                         if (error) {
                     console.log(error);
@@ -490,6 +491,7 @@ bindEvents: function() {
     event.preventDefault();
     var PropId = $('#PropSearchform #PropSearch').val();
     var NewVal = $('#PropValChangeform #PropValChange').val();
+      $('#exampleModal').modal('hide');
     web3.eth.getAccounts(function(error, accounts) {
                         if (error) {
                     console.log(error);
