@@ -6,7 +6,7 @@ App = {
 
 
 
-
+  web3: null,
   init: function() {
   if (typeof web3 !== 'undefined') {
     App.web3Provider = web3.currentProvider;
@@ -16,6 +16,7 @@ App = {
   //  Web3j web3 = Web3j.build(new HttpService("https://rinkeby.infura.io/<your-token>"));
 
   }
+  console.log(App.web3Provider)
   web3 = new Web3(App.web3Provider);
 
 
@@ -368,7 +369,7 @@ App = {
 	}
 ];
 
-App.contracts.asset =  web3.eth.contract(abi).at('0x9b7d68289807a9c0cac14868d3ca1eb27ab7b0bd');
+App.contracts.asset =  new web3.eth.Contract(abi, '0x9b7d68289807a9c0cac14868d3ca1eb27ab7b0bd').methods;
 console.log(App.contracts.asset);
 
 
@@ -410,13 +411,14 @@ bindEvents: function() {
 										console.log(error);
 									      }
 
-      App.contracts.asset.createProperty(PropId, PropVal, PropOwner, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-        if(!error)
-            console.log(JSON.stringify(result));
-        else
-            console.error(error);
-      });
-
+      App.contracts.asset.createProperty(PropId, PropVal, PropOwner).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+		  function(error, result){
+			  if(!error)
+				  console.log(JSON.stringify(result));
+			  else
+				  console.error(error);
+		  }
+	  );
 
 
     });
@@ -432,12 +434,14 @@ bindEvents: function() {
                         if (error) {
                     console.log(error);
                         }
-                        App.contracts.asset.approveProperty(PropId, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-                          if(!error)
-                              console.log(JSON.stringify(result));
-                          else
-                              console.error(error);
-                        });});
+                        App.contracts.asset.approveProperty(PropId).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+							function(error, result){
+								if(!error)
+									console.log(JSON.stringify(result));
+								else
+									console.error(error);
+							}
+						)});
 
   },
   rejectProperty: function(event) {
@@ -447,12 +451,14 @@ bindEvents: function() {
                         if (error) {
                     console.log(error);
                         }
-                        App.contracts.asset.rejectProperty(PropId, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-                          if(!error)
-                              console.log(JSON.stringify(result));
-                          else
-                              console.error(error);
-                        });});
+                        App.contracts.asset.rejectProperty(PropId).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+							function(error, result){
+								if(!error)
+									console.log(JSON.stringify(result));
+								else
+									console.error(error);
+							}
+						)});
 
   },
   reqchangeOwnership: function(event) {
@@ -464,12 +470,14 @@ bindEvents: function() {
                         if (error) {
                     console.log(error);
                         }
-                        App.contracts.asset.changeOwnership(PropId, NewOwner, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-                          if(!error)
-                              console.log(JSON.stringify(result));
-                          else
-                              console.error(error);
-                        });});
+                        App.contracts.asset.changeOwnership(PropId, NewOwner).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+							function(error, result){
+								if(!error)
+									console.log(JSON.stringify(result));
+								else
+									console.error(error);
+							}
+						)});
 
   },
   approveChangeOwnership: function(event) {
@@ -479,12 +487,14 @@ bindEvents: function() {
                         if (error) {
                     console.log(error);
                         }
-                        App.contracts.asset.approveChangeOwnership(PropId, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-                          if(!error)
-                              console.log(JSON.stringify(result));
-                          else
-                              console.error(error);
-                        });});
+                        App.contracts.asset.approveChangeOwnership(PropId).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+							function(error, result){
+								if(!error)
+									console.log(JSON.stringify(result));
+								else
+									console.error(error);
+							}
+						);});
 
   },
   changeValue: function(event) {
@@ -496,12 +506,14 @@ bindEvents: function() {
                         if (error) {
                     console.log(error);
                         }
-                        App.contracts.asset.changeValue(PropId, NewVal, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-                          if(!error)
-                              console.log(JSON.stringify(result));
-                          else
-                              console.error(error);
-                        });});
+                        App.contracts.asset.changeValue(PropId, NewVal).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+							function(error, result){
+								if(!error)
+									console.log(JSON.stringify(result));
+								else
+									console.error(error);
+							}
+						);});
 
   },
   getPropertyDetails: function() {
@@ -513,7 +525,7 @@ bindEvents: function() {
                         }
 
 
-                                            App.contracts.asset.getPropertyDetails(PropId, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
+                                            App.contracts.asset.getPropertyDetails(PropId).call({from: accounts[0]}).then( function(result, error){
                                               if(!error)
                                           {        console.log(JSON.stringify(result));
 
@@ -599,28 +611,34 @@ bindEvents: function() {
                     console.log(error);
                         }
                         if($('#adduser #PropAddUserrole').val() == "User")
-                        {App.contracts.asset.addNewUser(useraddress, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-                          if(!error)
-                              console.log(result);
-                          else
-                              console.error(error);
-                        });
+                        {App.contracts.asset.addNewUser(useraddress).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+							function(error, result){
+								if(!error)
+									console.log(JSON.stringify(result));
+								else
+									console.error(error);
+							}
+						);
                         }
                         else if ($('#adduser #PropAddUserrole').val() == "Admin")
-                        {App.contracts.asset.addNewAdmin(useraddress, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-                          if(!error)
-                              console.log(JSON.stringify(result));
-                          else
-                              console.error(error);
-                        });
+                        {App.contracts.asset.addNewAdmin(useraddress).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+							function(error, result){
+								if(!error)
+									console.log(JSON.stringify(result));
+								else
+									console.error(error);
+							}
+						);
                         }
                         else if ($('#adduser #PropAddUserrole').val() == "SuperAdmin")
-                        {App.contracts.asset.addNewSuperAdmin(useraddress, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-                          if(!error)
-                              console.log(JSON.stringify(result));
-                          else
-                              console.error(error);
-                        });
+                        {App.contracts.asset.addNewSuperAdmin(useraddress).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+							function(error, result){
+								if(!error)
+									console.log(JSON.stringify(result));
+								else
+									console.error(error);
+							}
+						);
                         }
 
 
@@ -634,12 +652,14 @@ bindEvents: function() {
                         if (error) {
                     console.log(error);
                         }
-                        App.contracts.asset.approveUsers(useraddress, {gas: 1000000, gasPrice: web3.toWei(20, 'gwei')}, function(error, result){
-                          if(!error)
-                              console.log(JSON.stringify(result));
-                          else
-                              console.error(error);
-                        });});
+                        App.contracts.asset.approveUsers(useraddress).send({gas: 1000000, gasPrice: web3.utils.toWei('20', 'gwei'), from: accounts[0]}).then(
+							function(error, result){
+								if(!error)
+									console.log(JSON.stringify(result));
+								else
+									console.error(error);
+							}
+						);});
 
   }
 
