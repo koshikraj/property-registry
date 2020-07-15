@@ -1,7 +1,7 @@
 {
-  "name": "Land record management",
+  "name": "truffle-init-webpack",
   "version": "0.0.2",
-  "description": "Frontend for Land record management",
+  "description": "Frontend for land record management",
   "scripts": {
     "lint": "eslint ./",
     "build": "webpack",
